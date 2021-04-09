@@ -43,91 +43,36 @@ module Mongoid
         document = BSON::Document.new(document.send(:as_attributes))
       end
 
-      src = document
-      expanded = false
-      exists = true
+      current = [document]
 
       key.to_s.split('.').each do |field|
-        if (index = field.to_i).to_s == field
-          case src
+        new = []
+        current.each do |doc|
+          case doc
           when Hash
-            exists = src.key?(field)
-            src = src[field]
+            if doc.key?(field)
+              new << doc[field]
+            end
           when Array
-            # it might be simpler to avoid entering the `if` block of if (index = field.to_i).to_s == field
-            # if we are expanded and any (?) Hashes in the Array have the key?
-            if expanded
-              new = []
-              src.each do |doc|
-                case doc
-                when Hash
-                  if doc.key?(field)
-                    v = doc[field]
-                    case v
-                    when Array
-                      new += v
-                    else
-                      new += [v]
-                    end
-                  end
-                else
-                  # Trying to hash index into a value that is not a hash
-                end
-              end
-
-              if new.length > 0
-                src = new
-                next
+            if (index = field.to_i).to_s == field
+              if doc.length > index
+                new << doc[index]
               end
             end
-
-            # Array indexing
-            exists = index < src.length
-            src = src[index]
-          else
-            # Trying to index something that is not an array
-            exists = false
-            src = nil
-          end
-        else
-          case src
-          when nil
-            exists = false
-          when Hash
-            exists = src.key?(field)
-            src = src[field]
-          when Array
-            expanded = true
-            exists = false
-            new = []
-            src.each do |doc|
-              case doc
-              when Hash
-                if doc.key?(field)
-                  v = doc[field]
-                  case v
-                  when Array
-                    new += v
-                  else
-                    new += [v]
-                  end
-                  exists = true
+            doc.each do |subdoc|
+              if Hash === subdoc
+                if subdoc.key?(field)
+                  new << subdoc[field]
                 end
-              else
-                # Trying to hash index into a value that is not a hash
               end
             end
-            src = new
-          else
-            # Trying to descend into a field that is not a hash using
-            # dot notation.
-            exists = false
-            src = nil
           end
         end
+        current = new
+        break if current.empty?
       end
 
-      [exists, src, expanded]
+      current
     end
   end
 end
