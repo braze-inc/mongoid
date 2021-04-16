@@ -73,10 +73,7 @@ module Mongoid
         #
         # In use-cases where shard key is modified, this workaround is
         # insufficient.
-        selector[field.to_s] =
-          new_record? || attribute_was(field).nil?
-            ? send(field)
-            : attribute_was(field)
+        selector[field.to_s] = new_record? ? send(field) : attribute_was(field) || send(field)
       end
       selector
     end
