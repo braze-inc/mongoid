@@ -63,7 +63,20 @@ module Mongoid
     def shard_key_selector
       selector = {}
       shard_key_fields.each do |field|
-        selector[field.to_s] = new_record? ? send(field) : attribute_was(field)
+        # This workaround partially resolves an issue where shard_key_selector
+        # returns the incorrect value for a shard key during post-persist
+        # callbacks. This workaround is sufficient for the use case where:
+        # 1. Shard key values are never modified after being set.
+        #
+        # This workaround makes shard_key_selector (and atomic_selector) behave
+        # correctly only when the assumption from the above use case is true.
+        #
+        # In use-cases where shard key is modified, this workaround is
+        # insufficient.
+        selector[field.to_s] =
+          new_record? || attribute_was(field).nil?
+            ? send(field)
+            : attribute_was(field)
       end
       selector
     end

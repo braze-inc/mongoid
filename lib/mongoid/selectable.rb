@@ -20,7 +20,17 @@ module Mongoid
     #
     # @since 1.0.0
     def atomic_selector
-      @atomic_selector ||=
+      # Instance variable caching for @atomic_selector has been removed because
+      # it has been proven to cause multiple bugs. Mongoid has fixed one of
+      # those bugs by removing the @atomic_selector instance variable during
+      # the reload method. However, this caching still has the potential to
+      # cause more bugs when any consumers of @atomic_selector are called
+      # during post-persist callback.
+      #
+      # I (dalton.black@braze.com) have already raised this issue with Mongoid
+      # in some capacity (MONGOID-5076/5078). I will continue to push on the
+      # full scope of this caching issue.
+      @atomic_selector =
         (embedded? ? embedded_atomic_selector : root_atomic_selector)
     end
 
