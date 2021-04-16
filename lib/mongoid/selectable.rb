@@ -30,8 +30,7 @@ module Mongoid
       # I (dalton.black@braze.com) have already raised this issue with Mongoid
       # in some capacity (MONGOID-5076/5078). I will continue to push on the
       # full scope of this caching issue.
-      @atomic_selector =
-        (embedded? ? embedded_atomic_selector : root_atomic_selector)
+      embedded? ? embedded_atomic_selector : root_atomic_selector
     end
 
     private
