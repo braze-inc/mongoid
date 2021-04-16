@@ -17,26 +17,10 @@ module Mongoid
     #
     # @raise [ Errors::DocumentNotFound ] If the document was deleted.
     #
-    # @param [ true, false ] clear_atomic_selector Clear the atomic selector before reloading
-    #
     # @return [ Document ] The document, reloaded.
     #
     # @since 1.0.0
-    def reload(clear_atomic_selector: true)
-      # Braze fork:
-      #   At least one place in our code is calling `self.reload` in an
-      #   after_save callback, which is failing to find the document if
-      #   the atomic_selector is no longer cached (because the shard_key
-      #   fields become nil in #atomic_selector until after the callbacks
-      #   are finalized).
-      #
-      #   This clear_atomic_selector param allows us to capture the
-      #   atomic_selector in a before_save and _not_ clear it.
-      if clear_atomic_selector && @atomic_selector
-        # Clear atomic_selector cache for sharded clusters. MONGOID-5076
-        remove_instance_variable('@atomic_selector')
-      end
-
+    def reload
       reloaded = _reload
       if Mongoid.raise_not_found_error && reloaded.empty?
         raise Errors::DocumentNotFound.new(self.class, _id, _id)
