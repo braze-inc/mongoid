@@ -10,6 +10,12 @@ module Mongoid
         unless Hash === expr
           raise Errors::InvalidQuery, "MQL query must be provided as a Hash"
         end
+        if !(document === BSON::Document) && document.respond_to?(:as_attributes, true)
+          # If a document has hash fields, as_attributes would keep those fields
+          # as Hash instances which do not offer indifferent access.
+          # Convert to BSON::Document to get indifferent access on hash fields.
+          document = BSON::Document.new(document.send(:as_attributes))
+        end
         expr.all? do |k, expr_v|
           k = k.to_s
           if k.start_with?('$')
