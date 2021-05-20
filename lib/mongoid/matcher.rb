@@ -36,13 +36,6 @@ module Mongoid
     #   Whether the value existed in the document, the extracted value
     #   and the array expansion flag.
     module_function def extract_attribute(document, key)
-      if document.respond_to?(:as_attributes, true)
-        # If a document has hash fields, as_attributes would keep those fields
-        # as Hash instances which do not offer indifferent access.
-        # Convert to BSON::Document to get indifferent access on hash fields.
-        document = BSON::Document.new(document.send(:as_attributes))
-      end
-
       current = [document]
 
       key.to_s.split('.').each do |field|
