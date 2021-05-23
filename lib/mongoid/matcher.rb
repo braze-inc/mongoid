@@ -40,7 +40,8 @@ module Mongoid
         # If a document has hash fields, as_attributes would keep those fields
         # as Hash instances which do not offer indifferent access.
         # Convert to BSON::Document to get indifferent access on hash fields.
-        document = BSON::Document.new(document.send(:as_attributes))
+        # document = BSON::Document.new(document.send(:as_attributes))
+        document = document.send(:as_attributes)
       end
 
       src = document
@@ -53,22 +54,27 @@ module Mongoid
           if Array === src
             exists = index < src.length
             src = src[index]
+            print("loc1\n")
           else
             # Trying to index something that is not an array
             exists = false
             src = nil
+            print("loc2\n")
           end
         else
           case src
           when nil
             exists = false
+            print("loc3\n")
           when Hash
             exists = src.key?(field)
             src = src[field]
+            print("loc4\n")
           when Array
             expanded = true
             exists = false
             new = []
+            print("loc5\n")
             src.each do |doc|
               case doc
               when Hash
@@ -76,18 +82,22 @@ module Mongoid
                   v = doc[field]
                   case v
                   when Array
+                    print("loc5.1\n")
                     new += v
                   else
+                    print("loc5.2\n")
                     new += [v]
                   end
                   exists = true
                 end
               else
+                print("loc5.3\n")
                 # Trying to hash index into a value that is not a hash
               end
             end
             src = new
           else
+            print("loc6\n")
             # Trying to descend into a field that is not a hash using
             # dot notation.
             exists = false

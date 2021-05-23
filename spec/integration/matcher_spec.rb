@@ -5,6 +5,13 @@ require 'spec_helper'
 
 describe 'Matcher operators' do
   let(:result) do
+    print("query:\n#{query}\n")
+    if !document.nil?
+      begin
+        print("document:\n#{document.as_json}\n")
+      rescue => e
+      end
+    end
     document._matches?(query)
   end
 
