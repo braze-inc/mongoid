@@ -67,8 +67,13 @@ module Mongoid
             exists = false
             print("loc3\n")
           when Hash
-            exists = src.key?(field)
-            src = src[field]
+            value = indifferent_hash_fetch(src, field)
+            if value.nil?
+              exists = false
+              src = nil
+            else
+              src = value
+            end
             print("loc4\n")
           when Array
             expanded = true
@@ -107,6 +112,12 @@ module Mongoid
       end
 
       [exists, src, expanded]
+    end
+
+    module_function def indifferent_hash_fetch(hash, key)
+      hash.fetch(key.to_s) do
+        hash.fetch(key.to_sym)
+      end
     end
   end
 end
