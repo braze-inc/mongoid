@@ -87,10 +87,10 @@ module Mongoid
                   v = doc[field]
                   case v
                   when Array
-                    print("loc5.1\n")
+                    print("loc5.1:#{field}\n")
                     new += v
                   else
-                    print("loc5.2\n")
+                    print("loc5.2:#{field}\n")
                     new += [v]
                   end
                   exists = true
