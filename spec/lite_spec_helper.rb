@@ -18,7 +18,7 @@ require 'pp'
 autoload :Timecop, 'timecop'
 
 require 'support/spec_config'
-require 'mrss/lite_constraints'
+# require 'mrss/lite_constraints'
 require "support/session_registry"
 
 unless SpecConfig.instance.ci?
@@ -70,7 +70,7 @@ RSpec.configure do |config|
     end
   end
 
-  config.extend(Mrss::LiteConstraints)
+  # config.extend(Mrss::LiteConstraints)
 end
 
 # require all shared examples

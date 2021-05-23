@@ -29,11 +29,11 @@ def database_id_alt
   "mongoid_test_alt"
 end
 
-require 'mrss/cluster_config'
+# require 'mrss/cluster_config'
 require 'support/client_registry'
-require 'mrss/constraints'
+# require 'mrss/constraints'
 
-ClusterConfig = Mrss::ClusterConfig
+# ClusterConfig = Mrss::ClusterConfig
 
 require 'support/authorization'
 require 'support/expectations'
@@ -133,7 +133,7 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
   config.include(Helpers)
   config.include(Mongoid::Expectations)
-  config.extend(Mrss::Constraints)
+  # config.extend(Mrss::Constraints)
   config.extend(Constraints)
   config.extend(Mongoid::Macros)
 
