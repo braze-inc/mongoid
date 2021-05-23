@@ -10,7 +10,7 @@ $: << File.join(ROOT, 'spec/shared/lib')
 
 require "rake"
 require "rspec/core/rake_task"
-require 'mrss/spec_organizer'
+# require 'mrss/spec_organizer'
 
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require "mongoid/version"
