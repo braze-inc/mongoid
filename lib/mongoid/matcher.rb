@@ -54,18 +54,15 @@ module Mongoid
           if Array === src
             exists = index < src.length
             src = src[index]
-            print("loc1\n")
           else
             # Trying to index something that is not an array
             exists = false
             src = nil
-            print("loc2\n")
           end
         else
           case src
           when nil
             exists = false
-            print("loc3\n")
           when Hash
             value = indifferent_hash_fetch(src, field)
             if value.nil?
@@ -74,12 +71,10 @@ module Mongoid
             else
               src = value
             end
-            print("loc4\n")
           when Array
             expanded = true
             exists = false
             new = []
-            print("loc5\n")
             src.each do |doc|
               case doc
               when Hash
@@ -87,22 +82,18 @@ module Mongoid
                 if !v.nil?
                   case v
                   when Array
-                    print("loc5.1:#{field}\n")
                     new += v
                   else
-                    print("loc5.2:#{field}\n")
                     new += [v]
                   end
                   exists = true
                 end
               else
-                print("loc5.3\n")
                 # Trying to hash index into a value that is not a hash
               end
             end
             src = new
           else
-            print("loc6\n")
             # Trying to descend into a field that is not a hash using
             # dot notation.
             exists = false
