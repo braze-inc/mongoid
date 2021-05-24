@@ -106,8 +106,8 @@ module Mongoid
     end
 
     module_function def indifferent_hash_fetch(hash, key)
-      hash.fetch(key.to_s) do
-        hash.fetch(key.to_sym, nil)
+      hash.fetch(key.to_sym) do
+        hash.fetch(key.to_s, nil)
       end
     end
   end
