@@ -116,8 +116,8 @@ describe 'Matcher operators' do
 
     context "array hash field" do
       let(:document) do
-        Cart.new(
-          items: [
+        Band.new(
+          genres: [
             {
               name: 'foo'
             },
@@ -131,7 +131,7 @@ describe 'Matcher operators' do
       context 'implicit $eq' do
         context 'matches' do
           let(:query) do
-            {'items.name' => 'foo'}
+            {'genres.name' => 'foo'}
           end
 
           it_behaves_like 'is true'
@@ -139,7 +139,7 @@ describe 'Matcher operators' do
 
         context 'does not match' do
           let(:query) do
-            {'items.name' => 'missing'}
+            {'genres.name' => 'missing'}
           end
 
           it_behaves_like 'is false'
