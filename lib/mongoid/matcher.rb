@@ -83,8 +83,8 @@ module Mongoid
             src.each do |doc|
               case doc
               when Hash
-                if doc.key?(field)
-                  v = doc[field]
+                v = indifferent_hash_fetch(doc, field)
+                if !v.nil?
                   case v
                   when Array
                     print("loc5.1:#{field}\n")
