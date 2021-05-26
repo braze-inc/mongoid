@@ -37,10 +37,7 @@ module Mongoid
     #   and the array expansion flag.
     module_function def extract_attribute(document, key)
       if document.respond_to?(:as_attributes, true)
-        # If a document has hash fields, as_attributes would keep those fields
-        # as Hash instances which do not offer indifferent access.
-        # Convert to BSON::Document to get indifferent access on hash fields.
-        document = BSON::Document.new(document.send(:as_attributes))
+        document = document.send(:as_attributes)
       end
 
       current = [document]
@@ -50,8 +47,9 @@ module Mongoid
         current.each do |doc|
           case doc
           when Hash
-            if doc.key?(field)
-              new << doc[field]
+            v = indifferent_hash_fetch(doc, field)
+            if !v.nil?
+              new << v
             end
           when Array
             if (index = field.to_i).to_s == field
@@ -61,8 +59,9 @@ module Mongoid
             end
             doc.each do |subdoc|
               if Hash === subdoc
-                if subdoc.key?(field)
-                  new << subdoc[field]
+                v = indifferent_hash_fetch(subdoc, field)
+                if !v.nil?
+                  new << v
                 end
               end
             end
@@ -73,6 +72,12 @@ module Mongoid
       end
 
       current
+    end
+
+    module_function def indifferent_hash_fetch(hash, key)
+      hash.fetch(key.to_sym) do
+        hash.fetch(key.to_s, nil)
+      end
     end
   end
 end

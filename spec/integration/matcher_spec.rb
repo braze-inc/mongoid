@@ -114,6 +114,39 @@ describe 'Matcher operators' do
       end
     end
 
+    context "array hash field" do
+      let(:document) do
+        Band.new(
+          genres: [
+            {
+              name: 'foo'
+            },
+            {
+              name: 'bar'
+            },
+          ],
+        )
+      end
+
+      context 'implicit $eq' do
+        context 'matches' do
+          let(:query) do
+            {'genres.name' => 'foo'}
+          end
+
+          it_behaves_like 'is true'
+        end
+
+        context 'does not match' do
+          let(:query) do
+            {'genres.name' => 'missing'}
+          end
+
+          it_behaves_like 'is false'
+        end
+      end
+    end
+
     context 'embeds_many' do
       let(:document) do
         Survey.new(
