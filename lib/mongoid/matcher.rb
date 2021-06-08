@@ -47,9 +47,8 @@ module Mongoid
         current.each do |doc|
           case doc
           when Hash
-            v = indifferent_hash_fetch(doc, field)
-            if !v.nil?
-              new << v
+            if indifferent_key?(doc, field)
+              new << indifferent_hash_fetch(doc, field)
             end
           when Array
             if (index = field.to_i).to_s == field
@@ -59,9 +58,8 @@ module Mongoid
             end
             doc.each do |subdoc|
               if Hash === subdoc
-                v = indifferent_hash_fetch(subdoc, field)
-                if !v.nil?
-                  new << v
+                if indifferent_key?(subdoc, field)
+                  new << indifferent_hash_fetch(subdoc, field)
                 end
               end
             end
@@ -72,6 +70,10 @@ module Mongoid
       end
 
       current
+    end
+
+    module_function def indifferent_key?(hash, key)
+      hash.key?(key.to_s) || hash.key?(key.to_sym)
     end
 
     module_function def indifferent_hash_fetch(hash, key)

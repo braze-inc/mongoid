@@ -110,6 +110,22 @@ describe 'Matcher operators' do
 
             it_behaves_like 'is false'
           end
+
+          context 'nil value' do
+            let(:document) do
+              Bar.new(
+                writer: {speed: nil},
+              )
+            end
+
+            context 'exists' do
+              let (:query) do
+                {'writer.speed': {:"$exists" => true}}
+              end
+
+              it_behaves_like 'is true'
+            end
+          end
         end
       end
     end
