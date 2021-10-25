@@ -177,7 +177,7 @@ can be configured.
           connect: :direct
 
           # Change the default time in seconds the server monitors refresh their status
-          # via ismaster commands. (default: 10)
+          # via hello commands. (default: 10)
           heartbeat_frequency: 10
 
           # The time in seconds for selecting servers for a near read preference. (default: 0.015)
@@ -569,7 +569,7 @@ When using Mongoid with a forking web server such as Puma, Unicorn or
 Passenger, it is recommended to not perform any operations on Mongoid models
 in the parent process prior to the fork.
 
-When a process forks, Ruby threads are not transfered to the child processes
+When a process forks, Ruby threads are not transferred to the child processes
 and the Ruby driver Client objects lose their background monitoring. The
 application will typically seem to work just fine until the deployment
 state changes (for example due to network errors, a maintenance event) at
