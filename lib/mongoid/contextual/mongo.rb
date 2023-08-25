@@ -38,6 +38,16 @@ module Mongoid
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
 
+      # Run an explain on the criteria.
+      #
+      # @example Explain the criteria.
+      #   Band.where(name: "Depeche Mode").explain
+      #
+      # @param [ Hash ] options customizable options (See Mongo::Collection::View::Explainable)
+      #
+      # @return [ Hash ] The explain result.
+      def_delegator :view, :explain
+
       # Is the context cached?
       #
       # @example Is the context cached?
@@ -181,18 +191,6 @@ module Mongoid
         try_cache(:exists) do
           !!(view.projection(_id: 1).limit(1).first)
         end
-      end
-
-      # Run an explain on the criteria.
-      #
-      # @example Explain the criteria.
-      #   Band.where(name: "Depeche Mode").explain
-      #
-      # @return [ Hash ] The explain result.
-      #
-      # @since 3.0.0
-      def explain
-        view.explain
       end
 
       # Execute the find and modify command, used for MongoDB's
